@@ -36,7 +36,15 @@ module.exports = (sequelize, DataTypes) => {
       description: this.description,
       frontend_days: this.frontend_days,
       backend_days: this.backend_days,
-    }).then(df => ({ id: df.id }));
+    }).then(df => ({
+      id: df.id,
+      title: df.title,
+      description: df.description,
+      frontend_days: df.frontend_days,
+      backend_days: df.backend_days,
+      created_at: df.createdAt,
+      updated_at: df.updatedAt,
+    }));
   };
 
   const findDefaultFeatureByPk = id =>

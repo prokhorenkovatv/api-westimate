@@ -6,11 +6,12 @@ const ErrorResponse = require("../utils/errorResponse");
 exports.getFeatures = asyncHandler(async (req, res, next) => {
   const default_features = await models.Default_feature.list();
   if (!default_features) return next(new ErrorResponse("Server error", 500));
-  res.status(200).json({ default_features });
+  res.status(200).json(default_features);
 });
 
 exports.postFeature = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
+  console.log(errors);
   if (!errors.isEmpty())
     throw new ErrorResponse(
       "Validation failed, entered data is incorrect",
@@ -28,10 +29,7 @@ exports.postFeature = asyncHandler(async (req, res, next) => {
 
   const newDefaultFeature = await feature.create();
   if (!newDefaultFeature) return next(new ErrorResponse("Server error", 500));
-  res.status(201).json({
-    message: "Default feature created",
-    default_feature: newDefaultFeature,
-  });
+  res.status(201).json(newDefaultFeature);
 });
 
 exports.getFeature = asyncHandler(async (req, res, next) => {
@@ -41,17 +39,10 @@ exports.getFeature = asyncHandler(async (req, res, next) => {
   res.status(200).json(feature);
 });
 
-exports.putFeature = asyncHandler(async (req, res, next) => {
-  const { title, description, backend_days, frontend_days } = req.body;
+exports.patchFeature = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const updateFeatureObject = {
-    title,
-    description,
-    backend_days,
-    frontend_days,
-  };
 
-  const updatedFeature = models.Default_feature.update(id, updateFeatureObject);
+  const updatedFeature = models.Default_feature.update(id, req.body);
   if (!updatedFeature) return next(new ErrorResponse("Server error", 500));
   const feature = await models.Default_feature.read(id);
   res.status(200).json(feature);

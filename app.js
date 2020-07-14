@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const i18n = require("i18n");
 const PORT = process.env.PORT || 3500;
 const errorHandler = require("./middleware/error");
 const projects = require("./routes/projects");
@@ -23,7 +24,12 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
   );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type",
+    "Authorization",
+    "accept-language"
+  );
   next();
 });
 

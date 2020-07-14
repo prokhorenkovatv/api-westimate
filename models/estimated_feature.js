@@ -45,10 +45,10 @@ module.exports = (sequelize, DataTypes) => {
     return Estimated_feature.create({
       title: this.title,
       description: this.description,
-      frontend_days: this.frontendDays,
-      backend_days: this.backendDays,
+      frontend_days: this.frontend_days,
+      backend_days: this.backend_days,
       project_id: this.project_id,
-    }).then(ef => ({ id: ef.id }));
+    }).then(ef => ef);
   };
 
   const findFeatureByPk = id =>

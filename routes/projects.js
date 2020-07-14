@@ -1,37 +1,44 @@
 const express = require("express");
-const { body } = require("express-validator");
 const projectController = require("../controllers/projects");
 const estimatedFeatureController = require("../controllers/estimated_feature");
 const router = express.Router();
 const authMiddleware = require("../middleware/isAuth");
+const {
+  projectValidationRules,
+  validate,
+  featureValidationRules,
+} = require("../middleware/validator");
 
-router.get("/", projectController.getProjects);
+router.get("/", authMiddleware, projectController.getProjects);
+
+router.post("/", authMiddleware, projectController.postProject);
 
 router.post(
-  "/",
-  [
-    body("title").trim().isLength({ min: 3 }),
-    body("description").trim().isLength({ min: 3 }),
-  ],
-  projectController.postProject
+  "/:id/duplicate",
+  authMiddleware,
+  projectController.postDuplicateProject
 );
 
-router.get("/:id", projectController.getProject);
+router.get("/:id", authMiddleware, projectController.getProject);
 
-router.put("/:id", authMiddleware, projectController.putProject);
+router.patch("/:id", projectController.patchProject);
 
 router.delete("/:id", authMiddleware, projectController.deleteProject);
 
 router.post(
   "/:id/estimated_features",
-  authMiddleware,
+  // authMiddleware,
+  // featureValidationRules(),
+  // validate,
   estimatedFeatureController.postProjectFeature
 );
 
-router.put(
+router.patch(
   "/:id/estimated_features/:featureId",
-  authMiddleware,
-  estimatedFeatureController.putProjectFeature
+  // authMiddleware,
+  // featureValidationRules(),
+  // validate,
+  estimatedFeatureController.patchProjectFeature
 );
 
 router.delete(

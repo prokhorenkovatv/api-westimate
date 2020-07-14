@@ -1,4 +1,3 @@
-const { validationResult } = require("express-validator");
 const models = require("../models");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
@@ -8,17 +7,10 @@ const pdfTemplate = require("../templates");
 exports.getProjects = asyncHandler(async (req, res, next) => {
   const projects = await models.Project.list();
   if (!projects) return next(new ErrorResponse("Server error", 500));
-  res.status(200).json({ projects });
+  res.status(200).json(projects);
 });
 
 exports.postProject = asyncHandler(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty())
-    throw new ErrorResponse(
-      "Validation failed, entered data is incorrect",
-      422
-    );
-
   const {
     title,
     description,
@@ -42,9 +34,17 @@ exports.postProject = asyncHandler(async (req, res, next) => {
 
   const newProject = await project.create(models);
   if (!newProject) return next(new ErrorResponse("Server error", 500));
-  res
-    .status(201)
-    .json({ message: "Project was successfully created", project: newProject });
+  res.status(201).json(newProject);
+});
+
+exports.postDuplicateProject = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { author_id } = req.body;
+  const project = await models.Project.duplicate(id, author_id, models);
+
+  if (!project)
+    return next(new ErrorResponse(`Project not found with id of ${id}`, 404));
+  res.status(201).json(project);
 });
 
 exports.getProject = asyncHandler(async (req, res, next) => {
@@ -57,64 +57,23 @@ exports.getProject = asyncHandler(async (req, res, next) => {
   res.status(200).json(project);
 });
 
-exports.putProject = asyncHandler(async (req, res, next) => {
+exports.patchProject = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const {
-    title,
-    description,
-    status,
-    author_id,
-    price_per_hour,
-    hours_per_day,
-    estimated_scope_id,
-  } = req.body;
 
-  const {
-    analysis,
-    infrastructure,
-    design,
-    qa,
-    management,
-    support,
-    release,
-  } = req.body.estimated_scope;
+  const p = await models.Project.read(id); // we should find estimated_scope_id first
 
-  const updateProjectObject = {
-    title,
-    description,
-    status,
-    author_id,
-    price_per_hour,
-    hours_per_day,
-  };
+  const project = await Promise.all([
+    models.Project.update(req.body, {
+      where: { id: id },
+    }),
+    models.Estimated_scope.update(req.body.estimated_scope, {
+      where: { id: p.estimated_scope_id },
+    }),
+  ]);
 
-  const updateEstimatedScopeObject = {
-    analysis,
-    infrastructure,
-    design,
-    qa,
-    management,
-    support,
-    release,
-  };
-
-  const project = await res.send(
-    Promise.all([
-      models.Project.update(updateProjectObject, {
-        where: { id: id },
-      }),
-      models.Estimated_scope.update(updateEstimatedScopeObject, {
-        where: { id: estimated_scope_id },
-      }),
-    ])
-  );
-
-  // if (!project)
-  //   return next(new ErrorResponse(`Project not found by id ${id}`, 404))
   if (!project) return next(new ErrorResponse("Server error", 500));
 
   const updatedProject = await models.Project.read(id);
-
   res.status(200).json(updatedProject).end();
 });
 
@@ -128,7 +87,9 @@ exports.deleteProject = asyncHandler(async (req, res, next) => {
 });
 
 exports.postPdfProject = asyncHandler(async (req, res, next) => {
-  const html = pdfTemplate(req.body);
+  const { id } = req.body;
+  const project = await models.Project.read(id);
+  const html = pdfTemplate(project);
   const browser = await puppeteer.launch({
     args: ["--no-sandbox"],
     headless: true,

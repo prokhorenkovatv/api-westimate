@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { calculateTotals } = require("../utils/calculateTotals");
 module.exports = (sequelize, DataTypes) => {
   class Project extends Model {
     static associate(models) {
@@ -18,14 +19,20 @@ module.exports = (sequelize, DataTypes) => {
   }
   Project.init(
     {
-      title: DataTypes.STRING,
-      description: DataTypes.STRING,
-      status: DataTypes.ENUM(
-        "in_progress",
-        "dev_review",
-        "accepted",
-        "inactive"
-      ),
+      title: { type: DataTypes.STRING, allowNull: true },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.ENUM(
+          "in_progress",
+          "dev_review",
+          "accepted",
+          "inactive"
+        ),
+        defaultValue: "in_progress",
+      },
       price_per_hour: DataTypes.INTEGER,
       hours_per_day: DataTypes.INTEGER,
     },
@@ -45,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         author_id: project.author_id,
         price_per_hour: project.price_per_hour,
         hours_per_day: project.hours_per_day,
-        created_at: project.created_at,
-        updated_at: project.updated_at,
+        created_at: project.createdAt,
+        updated_at: project.updatedAt,
       }))
     );
 
@@ -61,12 +68,19 @@ module.exports = (sequelize, DataTypes) => {
         hours_per_day: this.hours_per_day,
         Estimated_scope: {
           analysis: this.analysis,
+          isAnalysisActive: this.isAnalysisActive,
           infrastructure: this.infrastructure,
+          isInfrastructureActive: this.isInfrastructureActive,
           design: this.design,
+          isDesignActive: this.isDesignActive,
           qa: this.qa,
+          isQaActive: this.isQaActive,
           management: this.management,
+          isManagementActive: this.isManagementActive,
           release: this.release,
+          isReleaseActive: this.isReleaseActive,
           support: this.support,
+          isSupportActive: this.isSupportActive,
         },
         Estimated_features: [],
       },
@@ -99,7 +113,6 @@ module.exports = (sequelize, DataTypes) => {
     const p = await findByPk(id);
     const estimated_scope = await p.getEstimated_scope();
     const estimated_features = await p.getEstimated_features();
-
     return {
       id: p.id,
       title: p.title,
@@ -113,15 +126,67 @@ module.exports = (sequelize, DataTypes) => {
       estimated_scope_id: p.estimated_scope_id,
       estimated_scope: {
         analysis: estimated_scope.analysis,
+        isAnalysisActive: estimated_scope.isAnalysisActive,
         infrastructure: estimated_scope.infrastructure,
+        isInfrastructureActive: estimated_scope.isInfrastructureActive,
         design: estimated_scope.design,
+        isDesignActive: estimated_scope.isDesignActive,
         qa: estimated_scope.qa,
+        isQaActive: estimated_scope.isQaActive,
         management: estimated_scope.management,
+        isManagementActive: estimated_scope.isManagementActive,
         release: estimated_scope.release,
+        isReleaseActive: estimated_scope.isReleaseActive,
         support: estimated_scope.support,
+        isSupportActive: estimated_scope.isSupportActive,
       },
       estimated_features,
+      ...calculateTotals(p, estimated_scope, estimated_features),
     };
+  };
+
+  Project.duplicate = async (id, author_id, models) => {
+    const p = await findByPk(id);
+    const es = await p.getEstimated_scope();
+    return Project.create(
+      {
+        title: p.title,
+        description: p.description,
+        status: p.status,
+        author_id: author_id,
+        price_per_hour: p.price_per_hour,
+        hours_per_day: p.hours_per_day,
+        Estimated_scope: {
+          analysis: es.analysis,
+          isAnalysisActive: es.isAnalysisActive,
+          infrastructure: es.infrastructure,
+          isInfrastructureActive: es.isInfrastructureActive,
+          design: es.design,
+          isDesignActive: es.isDesignActive,
+          qa: es.qa,
+          isQaActive: es.isQaActive,
+          management: es.management,
+          isManagementActive: es.isManagementActive,
+          release: es.release,
+          isReleaseActive: es.isReleaseActive,
+          support: es.support,
+          isSupportActive: es.isSupportActive,
+        },
+        Estimated_features: [],
+      },
+      {
+        include: [models.Estimated_scope, models.Estimated_feature],
+      }
+    ).then(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      status: p.status,
+      author_id: p.author_id,
+      price_per_hour: p.price_per_hour,
+      hours_per_day: p.hours_per_day,
+      estimated_scope_id: p.estimated_scope_id,
+    }));
   };
 
   Project.delete = (id, models) =>

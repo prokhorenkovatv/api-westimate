@@ -11,12 +11,47 @@ module.exports = (sequelize, DataTypes) => {
   Estimated_scope.init(
     {
       analysis: DataTypes.FLOAT,
+      isAnalysisActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
       infrastructure: DataTypes.FLOAT,
+      isInfrastructureActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
       design: DataTypes.FLOAT,
+      isDesignActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
       qa: DataTypes.FLOAT,
+      isQaActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
       management: DataTypes.FLOAT,
+      isManagementActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
       release: DataTypes.FLOAT,
+      isReleaseActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
       support: DataTypes.FLOAT,
+      isSupportActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
     },
     {
       sequelize,
