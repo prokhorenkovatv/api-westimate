@@ -2,7 +2,7 @@
   "name": "westimate-admin",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sequelize": "cross-env NODE_PATH=. sequelize",
@@ -12,6 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "@babel/register": "^7.10.4",
+    "@types/bcrypt": "^3.0.0",
+    "@types/bluebird": "^3.5.32",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/puppeteer": "^3.0.1",
+    "@types/uuid": "^8.0.0",
     "admin-bro": "^2.6.0",
     "admin-bro-expressjs": "^2.1.1",
     "admin-bro-sequelizejs": "^0.5.1",
@@ -26,14 +31,31 @@
     "express-validator": "^6.6.0",
     "i18n": "^0.10.0",
     "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "mysql2": "^2.1.0",
+    "node": "12.16.1",
     "puppeteer": "^5.0.0",
     "sequelize": "^6.3.0",
     "uuid": "^8.2.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.7",
+    "@types/node": "^14.0.24",
+    "@types/validator": "^13.1.0",
     "cross-env": "^7.0.2",
     "nodemon": "^2.0.4",
     "sequelize-cli": "^6.2.0"
+  },
+  "_moduleAliases": {
+    "routes": "dist/routes",
+    "models": "dist/models",
+    "utils": "dist/utils",
+    "database": "dist/database",
+    "controllers": "dist/controllers",
+    "middleware": "dist/middleware",
+    "templates": "dist/templates",
+    "admin": "dist/admin"
   }
 }
