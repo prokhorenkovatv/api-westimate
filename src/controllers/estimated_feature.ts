@@ -13,7 +13,7 @@ const getFeatures = asyncHandler(
     res.status(200).json(estimated_features);
   }
 );
-//??
+
 const postProjectFeature = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -45,7 +45,7 @@ const postProjectFeature = asyncHandler(
 const patchProjectFeature = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id, featureId } = req.params;
-    const updatedFeature = await models.Estimated_feature.update(
+    const updatedFeature = await models.Estimated_feature.updateEf(
       +featureId,
       req.body
     );

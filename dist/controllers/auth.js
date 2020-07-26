@@ -19,10 +19,9 @@ const updateTokens = (user_id) => {
 };
 const signIn = async (req, res, next) => {
     const { email, password } = req.body;
-    console.log(models_1.default, "hi");
-    const user = (await models_1.default.User.findOne({
+    const user = await models_1.default.User.findOne({
         where: { email },
-    }));
+    });
     try {
         if (!user) {
             return next(new errorResponse_1.default(`User with email - ${email} does not exist`, 401));

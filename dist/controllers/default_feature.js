@@ -43,7 +43,7 @@ const getFeature = async_1.asyncHandler(async (req, res, next) => {
 exports.getFeature = getFeature;
 const patchFeature = async_1.asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const updatedFeature = models_1.default.Default_feature.update(+id, req.body);
+    const updatedFeature = models_1.default.Default_feature.updateDf(+id, req.body);
     if (!updatedFeature)
         return next(new errorResponse_1.default("Server error", 500));
     const feature = await models_1.default.Default_feature.read(+id);

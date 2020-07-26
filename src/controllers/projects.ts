@@ -70,7 +70,7 @@ const patchProject = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
-    const p = await models.Project.read(+id); // we should find estimated_scope_id first
+    const p = await models.Project.read(+id); // we should find estimated_scope_id first.. it's not me, it's sequelize
 
     const project = await Promise.all([
       models.Project.update(req.body, {

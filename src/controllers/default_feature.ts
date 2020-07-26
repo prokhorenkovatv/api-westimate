@@ -50,7 +50,7 @@ const patchFeature = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
-    const updatedFeature = models.Default_feature.update(+id, req.body);
+    const updatedFeature = models.Default_feature.updateDf(+id, req.body);
     if (!updatedFeature) return next(new ErrorResponse("Server error", 500));
     const feature = await models.Default_feature.read(+id);
     res.status(200).json(feature);

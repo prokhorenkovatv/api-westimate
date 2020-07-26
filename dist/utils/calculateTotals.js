@@ -1,30 +1,39 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateTotals = void 0;
-exports.calculateTotals = (p, es, ef) => {
-    const total_frontend_days = ef.reduce((a, b) => a + b.frontend_days, 0);
-    const total_backend_days = ef.reduce((a, b) => a + b.backend_days, 0);
-    const design_days = es.isDesignActive
-        ? (es.design / 100) * total_frontend_days
+exports.calculateTotals = (p, estimated_features, estimated_scope) => {
+    const total_frontend_days = estimated_features.reduce((a, b) => a + b.frontend_days, 0);
+    const total_backend_days = estimated_features.reduce((a, b) => a + b.backend_days, 0);
+    const design_days = estimated_scope.isDesignActive
+        ? (estimated_scope.design / 100) * total_frontend_days
         : 0;
-    const qa_days = es.isQaActive
-        ? (es.qa / 100) * (total_frontend_days + total_backend_days)
+    const qa_days = estimated_scope.isQaActive
+        ? (estimated_scope.qa / 100) * (total_frontend_days + total_backend_days)
         : 0;
-    const infrastructure_days = es.isInfrastructureActive
-        ? es.infrastructure
-            ? es.infrastructure
+    const infrastructure_days = estimated_scope.isInfrastructureActive
+        ? estimated_scope.infrastructure
+            ? estimated_scope.infrastructure
             : 0
         : 0;
-    const management_days = es.isManagementActive
-        ? (es.management / 100) * (total_frontend_days + total_backend_days)
+    const management_days = estimated_scope.isManagementActive
+        ? (estimated_scope.management / 100) *
+            (total_frontend_days + total_backend_days)
         : 0;
-    const release_days = es.isReleaseActive ? (es.release ? es.release : 0) : 0;
-    const analysis_days = es.isAnalysisActive
-        ? es.analysis
-            ? es.analysis
+    const release_days = estimated_scope.isReleaseActive
+        ? estimated_scope.release
+            ? estimated_scope.release
             : 0
         : 0;
-    const support_days = es.isSupportActive ? (es.support ? es.support : 0) : 0;
+    const analysis_days = estimated_scope.isAnalysisActive
+        ? estimated_scope.analysis
+            ? estimated_scope.analysis
+            : 0
+        : 0;
+    const support_days = estimated_scope.isSupportActive
+        ? estimated_scope.support
+            ? estimated_scope.support
+            : 0
+        : 0;
     const total_estimation_days = design_days +
         qa_days +
         infrastructure_days +

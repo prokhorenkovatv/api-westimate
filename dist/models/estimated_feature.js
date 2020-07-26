@@ -45,7 +45,7 @@ exports.default = (sequelize) => {
         }
         return ef;
     });
-    Estimated_feature.update = (id, updateFields) => findFeatureByPk(id).then(ef => ef.update(updateFields));
+    Estimated_feature.updateEf = (id, updateFields) => findFeatureByPk(id).then(ef => ef.update(updateFields));
     Estimated_feature.delete = (id) => findFeatureByPk(id).then(ef => ef.destroy({ where: { id } }));
     Estimated_feature.read = async function (id) {
         const ef = await findFeatureByPk(id);

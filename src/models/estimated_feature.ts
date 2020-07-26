@@ -3,14 +3,11 @@ import {
   Sequelize,
   Model,
   DataTypes,
-  UpdateOptions,
+  InstanceUpdateOptions,
   FindOptions,
   InstanceDestroyOptions,
 } from "sequelize";
-import {
-  EstimatedFeatureAttributes,
-  EstimatedFeatureCreationAttributes,
-} from "./types";
+import { EstimatedFeatureAttributes } from "./types";
 import { ErrorHandler } from "middleware/error";
 
 export default (sequelize: Sequelize) => {
@@ -26,23 +23,13 @@ export default (sequelize: Sequelize) => {
     public static list: (
       project_id: number
     ) => Promise<EstimatedFeatureAttributes[]>;
-    public static delete: (id: number) => Promise<any>;
+    public static delete: (id: number) => Promise<Estimated_feature | void>;
     public static read: (id: number) => Promise<EstimatedFeatureAttributes>;
-    public static update: (
+    public static updateEf: (
       id: number,
-      updateFields: UpdateOptions
-    ) => Promise<any>;
+      updateFields: InstanceUpdateOptions
+    ) => Promise<Estimated_feature>;
     public create!: () => Promise<EstimatedFeatureAttributes>;
-
-    // static associate(models) {
-    //   models.Estimated_feature.belongsTo(models.Project, {
-    //     onDelete: "CASCADE",
-    //     foreignKey: {
-    //       name: "project_id",
-    //       allowNull: false,
-    //     },
-    //   });
-    // }
   }
   Estimated_feature.init(
     {
@@ -57,7 +44,9 @@ export default (sequelize: Sequelize) => {
       modelName: "Estimated_feature",
     }
   );
-  Estimated_feature.list = (project_id: number): Promise<any> =>
+  Estimated_feature.list = (
+    project_id: number
+  ): Promise<EstimatedFeatureAttributes[]> =>
     Estimated_feature.findAll({
       order: [["createdAt", "asc"]],
       where: project_id ? { project_id: project_id } : null,
@@ -97,10 +86,10 @@ export default (sequelize: Sequelize) => {
       return ef;
     });
 
-  Estimated_feature.update = (
+  Estimated_feature.updateEf = (
     id: number,
-    updateFields: UpdateOptions<EstimatedFeatureAttributes>
-  ): Promise<any> => findFeatureByPk(id).then(ef => ef.update(updateFields));
+    updateFields: InstanceUpdateOptions<EstimatedFeatureAttributes>
+  ) => findFeatureByPk(id).then(ef => ef.update(updateFields));
 
   Estimated_feature.delete = (id: number): Promise<any> =>
     findFeatureByPk(id).then(ef =>

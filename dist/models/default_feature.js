@@ -49,7 +49,7 @@ exports.default = (sequelize) => {
         return df;
     });
     Default_feature.read = (id) => findDefaultFeatureByPk(id);
-    Default_feature.update = (id, updateFields) => findDefaultFeatureByPk(id).then(df => df.update(updateFields));
+    Default_feature.updateDf = (id, updateFields) => findDefaultFeatureByPk(id).then(df => df.update(updateFields));
     Default_feature.delete = (id) => findDefaultFeatureByPk(id).then(df => df.destroy({ where: { id } }));
     return Default_feature;
 };

@@ -4,44 +4,6 @@ const sequelize_1 = require("sequelize");
 const calculateTotals_1 = require("utils/calculateTotals");
 exports.default = (sequelize) => {
     class Project extends sequelize_1.Model {
-        create(models) {
-            return Project.create({
-                title: this.title,
-                description: this.description,
-                status: this.status,
-                author_id: this.author_id,
-                price_per_hour: this.price_per_hour,
-                hours_per_day: this.hours_per_day,
-                Estimated_scope: {
-                    analysis: this.analysis,
-                    isAnalysisActive: this.isAnalysisActive,
-                    infrastructure: this.infrastructure,
-                    isInfrastructureActive: this.isInfrastructureActive,
-                    design: this.design,
-                    isDesignActive: this.isDesignActive,
-                    qa: this.qa,
-                    isQaActive: this.isQaActive,
-                    management: this.management,
-                    isManagementActive: this.isManagementActive,
-                    release: this.release,
-                    isReleaseActive: this.isReleaseActive,
-                    support: this.support,
-                    isSupportActive: this.isSupportActive,
-                },
-                Estimated_features: [],
-            }, {
-                include: [models.Estimated_scope, models.Estimated_feature],
-            }).then(p => ({
-                id: p.id,
-                title: p.title,
-                description: p.description,
-                status: p.status,
-                author_id: p.author_id,
-                price_per_hour: p.price_per_hour,
-                hours_per_day: p.hours_per_day,
-                estimated_scope_id: p.estimated_scope_id,
-            }));
-        }
     }
     Project.associate = (models) => {
         models.Project.hasMany(models.Estimated_feature, {
@@ -56,6 +18,14 @@ exports.default = (sequelize) => {
             onDelete: "CASCADE",
         });
     };
+    const findByPk = (id) => Project.findByPk(id).then(p => {
+        if (p === null) {
+            const error = new Error("Project by this id is not found");
+            error.statusCode = 404;
+            throw error;
+        }
+        return p;
+    });
     Project.list = () => Project.findAll({ order: [["createdAt", "asc"]] }).then(ps => ps.map(project => ({
         id: project.id,
         title: project.title,
@@ -67,6 +37,30 @@ exports.default = (sequelize) => {
         created_at: project.createdAt,
         updated_at: project.updatedAt,
     })));
+    Project.prototype.create = async function (models) {
+        const p = await Project.create({
+            title: this.title,
+            description: this.description,
+            status: this.status,
+            author_id: this.author_id,
+            price_per_hour: this.price_per_hour,
+            hours_per_day: this.hours_per_day,
+            Estimated_scope: this.estimated_scope,
+            Estimated_features: [],
+        }, {
+            include: [models.Estimated_scope, models.Estimated_feature],
+        });
+        return {
+            id: p.id,
+            title: p.title,
+            description: p.description,
+            status: p.status,
+            author_id: p.author_id,
+            price_per_hour: p.price_per_hour,
+            hours_per_day: p.hours_per_day,
+            estimated_scope_id: p.estimated_scope_id,
+        };
+    };
     Project.duplicate = async (id, author_id, models) => {
         const p = await findByPk(id);
         const es = await p.getEstimated_scope();
@@ -77,26 +71,11 @@ exports.default = (sequelize) => {
             author_id: author_id,
             price_per_hour: p.price_per_hour,
             hours_per_day: p.hours_per_day,
-            Estimated_scope: {
-                analysis: es.analysis,
-                isAnalysisActive: es.isAnalysisActive,
-                infrastructure: es.infrastructure,
-                isInfrastructureActive: es.isInfrastructureActive,
-                design: es.design,
-                isDesignActive: es.isDesignActive,
-                qa: es.qa,
-                isQaActive: es.isQaActive,
-                management: es.management,
-                isManagementActive: es.isManagementActive,
-                release: es.release,
-                isReleaseActive: es.isReleaseActive,
-                support: es.support,
-                isSupportActive: es.isSupportActive,
-            },
+            Estimated_scope: es,
             Estimated_features: [],
         }, {
             include: [models.Estimated_scope, models.Estimated_feature],
-        }).then(p => ({
+        }).then((p) => ({
             id: p.id,
             title: p.title,
             description: p.description,
@@ -121,6 +100,7 @@ exports.default = (sequelize) => {
         const p = await findByPk(id);
         const estimated_scope = await p.getEstimated_scope();
         const estimated_features = await p.getEstimated_features();
+        const totals = calculateTotals_1.calculateTotals(p, estimated_features, estimated_scope);
         return {
             id: p.id,
             title: p.title,
@@ -132,34 +112,11 @@ exports.default = (sequelize) => {
             created_at: p.createdAt,
             updated_at: p.updatedAt,
             estimated_scope_id: p.estimated_scope_id,
-            estimated_scope: {
-                analysis: estimated_scope.analysis,
-                isAnalysisActive: estimated_scope.isAnalysisActive,
-                infrastructure: estimated_scope.infrastructure,
-                isInfrastructureActive: estimated_scope.isInfrastructureActive,
-                design: estimated_scope.design,
-                isDesignActive: estimated_scope.isDesignActive,
-                qa: estimated_scope.qa,
-                isQaActive: estimated_scope.isQaActive,
-                management: estimated_scope.management,
-                isManagementActive: estimated_scope.isManagementActive,
-                release: estimated_scope.release,
-                isReleaseActive: estimated_scope.isReleaseActive,
-                support: estimated_scope.support,
-                isSupportActive: estimated_scope.isSupportActive,
-            },
+            estimated_scope,
             estimated_features,
-            ...calculateTotals_1.calculateTotals(p, estimated_scope, estimated_features),
+            ...totals,
         };
     };
-    const findByPk = (id) => Project.findByPk(id).then(p => {
-        if (p === null) {
-            const error = new Error("Project by this id is not found");
-            error.statusCode = 404;
-            throw error;
-        }
-        return p;
-    });
     Project.init({
         title: { type: sequelize_1.DataTypes.STRING, allowNull: true },
         description: {

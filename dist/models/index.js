@@ -4,14 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const env = process.env.NODE_ENV || "development";
-const config = require("database/config.json")[env];
 const project_1 = __importDefault(require("models/project"));
 const estimated_scope_1 = __importDefault(require("models/estimated_scope"));
 const estimated_feature_1 = __importDefault(require("models/estimated_feature"));
 const default_feature_1 = __importDefault(require("models/default_feature"));
 const token_1 = __importDefault(require("models/token"));
 const user_1 = __importDefault(require("models/user"));
+const env = process.env.NODE_ENV || "development";
+const config = require("database/config.json")[env];
 let sequelize;
 if (config.use_env_variable) {
     sequelize = new sequelize_1.Sequelize(process.env[config.use_env_variable], config);
@@ -19,23 +19,6 @@ if (config.use_env_variable) {
 else {
     sequelize = new sequelize_1.Sequelize(config.database, config.username, config.password, config);
 }
-// const db: DB = {
-//   Project: sequelize.models.Project,
-//   Estimated_scope: sequelize.models.Estimated_scope,
-//   User: sequelize.models.User,
-//   Estimated_feature: sequelize.models.Estimated_feature,
-//   Default_feature: sequelize.models.Default_feature,
-//   Token: sequelize.models.Token,
-// };
-// Object.keys(db).forEach(modelName => {
-//   console.log(db);
-//   if (db[modelName].associate) {
-//     db[modelName].associate(db);
-//   }
-// });
-// db.sequelize = sequelize;
-// db.Sequelize = Sequelize;
-// export default db;
 const db = {
     Project: project_1.default(sequelize),
     Estimated_scope: estimated_scope_1.default(sequelize),
@@ -44,7 +27,7 @@ const db = {
     Token: token_1.default(sequelize),
     User: user_1.default(sequelize),
 };
-const applyExtraSetup = (db) => {
+const applyAssociations = (db) => {
     const { Project, Estimated_scope, Estimated_feature, User, Token } = db;
     Project.hasMany(Estimated_feature, {
         foreignKey: "project_id",
@@ -69,5 +52,5 @@ const applyExtraSetup = (db) => {
         onDelete: "CASCADE",
     });
 };
-applyExtraSetup(db);
+applyAssociations(db);
 exports.default = db;

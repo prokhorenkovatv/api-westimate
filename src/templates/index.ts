@@ -1,4 +1,6 @@
-const pdfTemplate = (project: any) => {
+import { ProjectExtendedType } from "types";
+
+const pdfTemplate = (project: ProjectExtendedType) => {
   const today = new Date();
   return `
    <!DOCTYPE html>
@@ -143,36 +145,36 @@ const pdfTemplate = (project: any) => {
          </tr>
          <tr class="item">
             <td>Design:</td>
-            <td>${parseInt(project.design_days)}</td>
+            <td>${project.design_days.toFixed(0)}</td>
          </tr>
          <tr class="item">
             <td>QA:</td>
-            <td>${parseInt(project.qa_days)}</td>
+            <td>${project.qa_days.toFixed(0)}</td>
          </tr>
          <tr class="item">
             <td>Infrastructure:</td>
-            <td>${parseInt(project.infrastructure_days)}</td>
+            <td>${project.infrastructure_days.toFixed(0)}</td>
          </tr>
          <tr class="item">
             <td>Management:</td>
-            <td>${parseInt(project.management_days)}</td>
+            <td>${project.management_days.toFixed(0)}</td>
          </tr>
          <tr class="item">
             <td>Release:</td>
-            <td>${parseInt(project.release_days)}</td>
+            <td>${project.release_days.toFixed(0)}</td>
          </tr>
          <tr class="item">
             <td>Analysis:</td>
-            <td>${parseInt(project.analysis_days)}</td>
+            <td>${project.analysis_days.toFixed(0)}</td>
          </tr>
          <tr class="item">
             <td>Support:</td>
-            <td>${parseInt(project.support_days)}</td>
+            <td>${project.support_days}</td>
          </tr>
          </table>
          <br />
-         <h3>Total hours: ${parseInt(project.total_hours)}</h3>
-         <h3>Total price: ${parseInt(project.total_price)}$</h3>
+         <h3>Total hours: ${project.total_hours}</h3>
+         <h3>Total price: ${project.total_price}$</h3>
       </div>
    </body>
    </html>

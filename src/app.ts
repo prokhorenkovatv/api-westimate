@@ -15,7 +15,6 @@ const PORT = process.env.PORT || 3500;
 const app = express();
 dotenv.config();
 app.use(cors());
-// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use((req: Request, res: Response, next: NextFunction) => {

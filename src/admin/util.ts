@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import models from "models";
 
-async function authenticate(email, password) {
+async function authenticate(email: string, password: string) {
   const userRecord = await models.User.findOne({
     where: { email },
   });

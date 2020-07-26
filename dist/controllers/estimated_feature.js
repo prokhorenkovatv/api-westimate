@@ -16,7 +16,6 @@ const getFeatures = async_1.asyncHandler(async (req, res, next) => {
     res.status(200).json(estimated_features);
 });
 exports.getFeatures = getFeatures;
-//??
 const postProjectFeature = async_1.asyncHandler(async (req, res, next) => {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty())
@@ -40,7 +39,7 @@ exports.postProjectFeature = postProjectFeature;
 //??
 const patchProjectFeature = async_1.asyncHandler(async (req, res, next) => {
     const { id, featureId } = req.params;
-    const updatedFeature = await models_1.default.Estimated_feature.update(+featureId, req.body);
+    const updatedFeature = await models_1.default.Estimated_feature.updateEf(+featureId, req.body);
     if (!updatedFeature)
         return next(new errorResponse_1.default("Server error", 500));
     const project = await models_1.default.Project.read(+id);

@@ -1,9 +1,19 @@
 "use strict";
 
 import { Sequelize, Model, DataTypes } from "sequelize";
-import { AllModels, UserAttributes } from "./types";
+import { AllModels } from "./types";
 export default (sequelize: Sequelize) => {
   class User extends Model {
+    public id!: number;
+    public first_name!: string;
+    public last_name!: string;
+    public phone!: number;
+    public email!: string;
+    public password!: string;
+    public gender!: number;
+    public onboarding_at!: Date;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
     public static associate(models: AllModels) {
       models.User.hasMany(models.Project, {
         foreignKey: "author_id",

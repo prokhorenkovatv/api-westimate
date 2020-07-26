@@ -1,29 +1,46 @@
-import { Model, ModelCtor, Optional } from "sequelize";
+import {
+  Model,
+  ModelCtor,
+  Optional,
+  BelongsToGetAssociationMixin,
+  HasManyAddAssociationMixin,
+  ModelStatic,
+} from "sequelize";
 
-type ModelCreator<M extends Model<any, any>> = typeof Model & { new (): M };
-
+//Models
+export type Estimated_scopeModel = Model<
+  EstimatedScopeAttributes,
+  EstimatedScopeCreationAttributes
+> &
+  EstimatedScopeAttributes;
+export type Estimated_featureModel = Model<
+  EstimatedFeatureAttributes,
+  EstimatedFeatureCreationAttributes
+> &
+  EstimatedFeatureAttributes;
+export type ProjectModel = Model<ProjectAttributes, ProjectCreationAttributes> &
+  ProjectAttributes;
+export type Default_featureModel = Model<
+  DefaultFeatureAttributes,
+  DefaultFeatureCreationAttributes
+> &
+  DefaultFeatureAttributes;
+export type UserModel = Model<UserAttributes>;
+export type TokenModel = Model<TokenAttributes>;
 export interface AllModels {
-  Project: ModelCtor<Model<ProjectAttributes, ProjectCreationAttributes>>;
-  Estimated_scope: ModelCtor<
-    Model<EstimatedScopeAttributes, EstimatedScopeCreationAttributes>
-  >;
-  Estimated_feature: ModelCtor<Model<TokenAttributes>>;
-  Default_feature: ModelCtor<
-    Model<DefaultFeatureAttributes, DefaultFeatureCreationAttributes>
-  >;
-  Token: ModelCtor<Model<TokenAttributes>>;
-  User: ModelCtor<Model<UserAttributes>>;
+  Project: ModelCtor<ProjectModel>;
+  Estimated_scope: ModelCtor<Estimated_scopeModel>;
+  Estimated_feature: ModelCtor<Estimated_featureModel>;
+  Default_feature: ModelCtor<Default_featureModel>;
+  Token: ModelCtor<TokenModel>;
+  User: ModelCtor<UserModel>;
 }
-export interface AllModelsPure {
-  [key: string]: Model<any, any>;
-}
-
+//Attributes
 export interface TokenAttributes {
   token_id: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
-
 export enum Status {
   DEVREVIEW = "dev_review",
   ACCEPTED = "accepted",
@@ -40,7 +57,7 @@ export interface ProjectAttributes {
   hours_per_day: number;
   created_at?: Date;
   updated_at?: Date;
-  [key: string]: any;
+  estimated_scope_id?: number;
 }
 export interface ProjectCreationAttributes
   extends Optional<ProjectAttributes, "id"> {}

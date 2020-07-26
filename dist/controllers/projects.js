@@ -51,7 +51,7 @@ const getProject = async_1.asyncHandler(async (req, res, next) => {
 exports.getProject = getProject;
 const patchProject = async_1.asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const p = await models_1.default.Project.read(+id); // we should find estimated_scope_id first
+    const p = await models_1.default.Project.read(+id); // we should find estimated_scope_id first.. it's not me, it's sequelize
     const project = await Promise.all([
         models_1.default.Project.update(req.body, {
             where: { id: id },

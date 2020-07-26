@@ -1,10 +1,6 @@
 "use strict";
 import { Sequelize, Model, DataTypes } from "sequelize";
-import {
-  EstimatedScopeAttributes,
-  EstimatedScopeCreationAttributes,
-  AllModels,
-} from "./types";
+import { EstimatedScopeAttributes } from "./types";
 
 export default (sequelize: Sequelize) => {
   class Estimated_scope extends Model {
@@ -25,12 +21,6 @@ export default (sequelize: Sequelize) => {
     public isSupportActive!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-
-    // static associate(models: AllModels): void {
-    //   models.Estimated_scope.hasOne(models.Project, {
-    //     foreignKey: "estimated_scope_id",
-    //   });
-    // }
   }
   Estimated_scope.init(
     {

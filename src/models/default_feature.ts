@@ -1,9 +1,13 @@
 "use strict";
-import { Sequelize, Model, DataTypes, UpdateOptions } from "sequelize";
 import {
-  DefaultFeatureAttributes,
-  DefaultFeatureCreationAttributes,
-} from "./types";
+  Sequelize,
+  Model,
+  DataTypes,
+  UpdateOptions,
+  DestroyOptions,
+  InstanceUpdateOptions,
+} from "sequelize";
+import { DefaultFeatureAttributes } from "./types";
 import { ErrorHandler } from "middleware/error";
 
 export default (sequelize: Sequelize) => {
@@ -15,13 +19,12 @@ export default (sequelize: Sequelize) => {
     public backend_days!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-
     public static read: (id: number) => Promise<DefaultFeatureAttributes>;
-    public static update: (
+    public static updateDf: (
       id: number,
       updateFields: UpdateOptions
-    ) => Promise<any>;
-    public static delete: (id: number) => Promise<any>;
+    ) => Promise<Default_feature>;
+    public static delete: (id: number) => Promise<Default_feature | void>;
     public static list: () => Promise<DefaultFeatureAttributes[]>;
     public create!: () => Promise<DefaultFeatureAttributes>;
   }
@@ -71,7 +74,7 @@ export default (sequelize: Sequelize) => {
     }));
   };
 
-  const findDefaultFeatureByPk = (id: number): Promise<any> =>
+  const findDefaultFeatureByPk = (id: number): Promise<Default_feature> =>
     Default_feature.findByPk(id).then(df => {
       if (df === null) {
         const error: ErrorHandler = new Error(
@@ -83,14 +86,17 @@ export default (sequelize: Sequelize) => {
       return df;
     });
 
-  Default_feature.read = (id: number): Promise<DefaultFeatureAttributes> =>
-    findDefaultFeatureByPk(id);
+  Default_feature.read = (id: number) => findDefaultFeatureByPk(id);
 
-  Default_feature.update = (id: number, updateFields) =>
-    findDefaultFeatureByPk(id).then(df => df.update(updateFields));
+  Default_feature.updateDf = (
+    id: number,
+    updateFields: InstanceUpdateOptions
+  ) => findDefaultFeatureByPk(id).then(df => df.update(updateFields));
 
   Default_feature.delete = (id: number) =>
-    findDefaultFeatureByPk(id).then(df => df.destroy({ where: { id } }));
+    findDefaultFeatureByPk(id).then(df =>
+      df.destroy({ where: { id } } as DestroyOptions)
+    );
 
   return Default_feature;
 };

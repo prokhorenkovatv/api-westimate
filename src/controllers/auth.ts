@@ -10,16 +10,6 @@ import {
 } from "utils/authHelper";
 import { Request, Response, NextFunction } from "express";
 
-type UserType = {
-  id: number;
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  gender: number;
-  onboarding_at: Date;
-};
-
 const updateTokens = (user_id: number) => {
   const accessToken = generateAccessToken(user_id);
   const refreshToken = generateRefreshToken();
@@ -32,10 +22,10 @@ const updateTokens = (user_id: number) => {
 
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
-  console.log(models, "hi");
-  const user = (await models.User.findOne({
+
+  const user = await models.User.findOne({
     where: { email },
-  })) as UserType | null;
+  });
   try {
     if (!user) {
       return next(

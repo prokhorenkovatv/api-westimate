@@ -1,6 +1,6 @@
 "use strict";
 
-import { Sequelize } from "sequelize";
+import { Sequelize, Model, ModelCtor } from "sequelize";
 import project from "models/project";
 import estimated_scope from "models/estimated_scope";
 import estimated_feature from "models/estimated_feature";
@@ -27,8 +27,8 @@ if (config.use_env_variable) {
 }
 
 interface DB {
-  [key: string]: any;
-} //temp-fix
+  [key: string]: ModelCtor<Model<any, any>>;
+}
 
 const db = {
   Project: project(sequelize),
