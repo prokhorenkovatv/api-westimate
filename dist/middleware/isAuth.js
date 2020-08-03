@@ -7,7 +7,7 @@ exports.authMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const errorResponse_1 = __importDefault(require("utils/errorResponse"));
 exports.authMiddleware = (req, res, next) => {
-    const authHeader = req.get("Authorization");
+    const authHeader = req.headers["authorization"];
     if (!authHeader)
         return next(new errorResponse_1.default("Token was not provided", 401));
     const token = authHeader.split(" ")[1];

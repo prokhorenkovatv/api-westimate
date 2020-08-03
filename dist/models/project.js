@@ -5,19 +5,6 @@ const calculateTotals_1 = require("utils/calculateTotals");
 exports.default = (sequelize) => {
     class Project extends sequelize_1.Model {
     }
-    Project.associate = (models) => {
-        models.Project.hasMany(models.Estimated_feature, {
-            foreignKey: "project_id",
-            onDelete: "CASCADE",
-        });
-        models.Project.belongsTo(models.Estimated_scope, {
-            foreignKey: {
-                name: "estimated_scope_id",
-                allowNull: false,
-            },
-            onDelete: "CASCADE",
-        });
-    };
     const findByPk = (id) => Project.findByPk(id).then(p => {
         if (p === null) {
             const error = new Error("Project by this id is not found");

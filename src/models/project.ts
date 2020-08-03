@@ -36,7 +36,7 @@ export default (sequelize: Sequelize) => {
     public estimated_features!: EstimatedFeatureAttributes[];
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-
+    //magic
     public createEstimated_scope!: BelongsToCreateAssociationMixin<
       Estimated_scopeModel
     >;
@@ -46,7 +46,7 @@ export default (sequelize: Sequelize) => {
     public getEstimated_features!: HasManyGetAssociationsMixin<
       Estimated_featureModel
     >;
-
+    //custom
     public static list: () => Promise<ProjectAttributes[]>;
     public create!: (models: AllModels) => Promise<ProjectType>;
     public static duplicate: (
@@ -54,21 +54,11 @@ export default (sequelize: Sequelize) => {
       author_id: number,
       models: AllModels
     ) => Promise<ProjectType>;
-    public static delete: (id: number, models: AllModels) => Promise<any>;
+    public static delete: (
+      id: number,
+      models: AllModels
+    ) => Promise<Project | void>;
     public static read: (id: number) => Promise<ProjectExtendedType>;
-    public static associate = (models: AllModels): void => {
-      models.Project.hasMany(models.Estimated_feature, {
-        foreignKey: "project_id",
-        onDelete: "CASCADE",
-      });
-      models.Project.belongsTo(models.Estimated_scope, {
-        foreignKey: {
-          name: "estimated_scope_id",
-          allowNull: false,
-        },
-        onDelete: "CASCADE",
-      });
-    };
   }
 
   const findByPk = (id: number): Promise<Project> =>
@@ -173,7 +163,7 @@ export default (sequelize: Sequelize) => {
       } as InstanceDestroyOptions)
     );
 
-  Project.read = async (id: number): Promise<ProjectExtendedType> => {
+  Project.read = async (id: number) => {
     const p = await findByPk(id);
     const estimated_scope = await p.getEstimated_scope();
     const estimated_features = await p.getEstimated_features();

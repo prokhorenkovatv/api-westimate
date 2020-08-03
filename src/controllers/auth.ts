@@ -10,7 +10,7 @@ import {
 } from "utils/authHelper";
 import { Request, Response, NextFunction } from "express";
 
-const updateTokens = (user_id: number) => {
+export const updateTokens = (user_id: number) => {
   const accessToken = generateAccessToken(user_id);
   const refreshToken = generateRefreshToken();
 
@@ -27,11 +27,10 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
     where: { email },
   });
   try {
-    if (!user) {
+    if (!user)
       return next(
         new ErrorResponse(`User with email - ${email} does not exist`, 401)
       );
-    }
 
     const isValid = bcrypt.compareSync(password, user.password);
     if (isValid)

@@ -1,0 +1,83 @@
+import { ProjectAttributes } from "../../src/models/types";
+import { ProjectExtendedType, ProjectType } from "../../src/types";
+
+export const allProjectsResponse = ([
+  {
+    id: 1,
+    title: "React Project",
+    description: "Description project",
+    status: "inactive",
+    author_id: 1,
+    price_per_hour: 18,
+    hours_per_day: 6,
+    created_at: "2020-07-13T08:50:05.000Z",
+    updated_at: "2020-07-14T13:08:44.000Z",
+  },
+] as unknown) as ProjectAttributes[];
+
+export const singleProjectResponse = ({
+  id: 1,
+  title: "React Project",
+  description: "Description project",
+  status: "inactive",
+  author_id: 1,
+  price_per_hour: 18,
+  hours_per_day: 6,
+  created_at: "2020-07-13T08:50:05.000Z",
+  updated_at: "2020-07-14T13:08:44.000Z",
+  estimated_scope_id: 1,
+  estimated_scope: {
+    id: 1,
+    analysis: 8,
+    isAnalysisActive: true,
+    infrastructure: 14,
+    isInfrastructureActive: true,
+    design: 100,
+    isDesignActive: true,
+    qa: 20,
+    isQaActive: true,
+    management: 30,
+    isManagementActive: false,
+    release: 1,
+    isReleaseActive: false,
+    support: 1,
+    isSupportActive: true,
+    createdAt: "2020-07-13T08:49:40.000Z",
+    updatedAt: "2020-07-14T11:31:05.000Z",
+  },
+  estimated_features: [
+    {
+      id: 44,
+      title: "From postman",
+      description: "Description of this feature",
+      frontend_days: 21,
+      backend_days: 20,
+      project_id: 1,
+      createdAt: "2020-07-14T11:30:16.000Z",
+      updatedAt: "2020-07-14T12:24:52.000Z",
+    },
+  ],
+  total_frontend_days: 21,
+  total_backend_days: 20,
+  design_days: 21,
+  qa_days: 8.200000000000001,
+  infrastructure_days: 14,
+  management_days: 0,
+  release_days: 0,
+  analysis_days: 8,
+  support_days: 1,
+  total_estimation_days: 52.2,
+  total_mandays: 93.2,
+  total_hours: 559.2,
+  total_price: 10065.6,
+} as unknown) as ProjectExtendedType;
+
+export const duplicateProjectDataResponse = {
+  id: 13,
+  title: "Tratata",
+  description: "tttt",
+  status: "in_progress",
+  author_id: 1,
+  price_per_hour: 5,
+  hours_per_day: 5,
+} as ProjectType;

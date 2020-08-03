@@ -3,12 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 exports.default = (sequelize) => {
     class User extends sequelize_1.Model {
-        static associate(models) {
-            models.User.hasMany(models.Project, {
-                foreignKey: "author_id",
-                onDelete: "CASCADE",
-            });
-        }
     }
     User.init({
         first_name: sequelize_1.DataTypes.STRING,

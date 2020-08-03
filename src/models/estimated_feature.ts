@@ -91,7 +91,7 @@ export default (sequelize: Sequelize) => {
     updateFields: InstanceUpdateOptions<EstimatedFeatureAttributes>
   ) => findFeatureByPk(id).then(ef => ef.update(updateFields));
 
-  Estimated_feature.delete = (id: number): Promise<any> =>
+  Estimated_feature.delete = (id: number) =>
     findFeatureByPk(id).then(ef =>
       ef.destroy({ where: { id } } as InstanceDestroyOptions)
     );

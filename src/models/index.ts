@@ -1,12 +1,13 @@
 "use strict";
 
-import { Sequelize, Model, ModelCtor } from "sequelize";
+import { Sequelize } from "sequelize";
 import project from "models/project";
 import estimated_scope from "models/estimated_scope";
 import estimated_feature from "models/estimated_feature";
 import default_feature from "models/default_feature";
 import token from "models/token";
 import user from "models/user";
+import { DB } from "./types";
 
 const env = process.env.NODE_ENV || "development";
 const config = require("database/config.json")[env];
@@ -24,10 +25,6 @@ if (config.use_env_variable) {
     config.password,
     config
   );
-}
-
-interface DB {
-  [key: string]: ModelCtor<Model<any, any>>;
 }
 
 const db = {

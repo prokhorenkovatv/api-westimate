@@ -35,7 +35,6 @@ const postProject = asyncHandler(
       },
       { include: [models.Estimated_scope] }
     );
-
     const newProject = await project.create(models);
     if (!newProject) return next(new ErrorResponse("Server error", 500));
     res.status(201).json(newProject);

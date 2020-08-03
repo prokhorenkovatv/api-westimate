@@ -1,11 +1,4 @@
-import {
-  Model,
-  ModelCtor,
-  Optional,
-  BelongsToGetAssociationMixin,
-  HasManyAddAssociationMixin,
-  ModelStatic,
-} from "sequelize";
+import { Model, ModelCtor, Optional } from "sequelize";
 
 //Models
 export type Estimated_scopeModel = Model<
@@ -25,8 +18,10 @@ export type Default_featureModel = Model<
   DefaultFeatureCreationAttributes
 > &
   DefaultFeatureAttributes;
-export type UserModel = Model<UserAttributes>;
-export type TokenModel = Model<TokenAttributes>;
+export type UserModel = Model<UserAttributes, UserCreationAttributes> &
+  UserAttributes;
+export type TokenModel = Model<TokenAttributes, TokenCreationAttributes> &
+  TokenAttributes;
 export interface AllModels {
   Project: ModelCtor<ProjectModel>;
   Estimated_scope: ModelCtor<Estimated_scopeModel>;
@@ -35,12 +30,15 @@ export interface AllModels {
   Token: ModelCtor<TokenModel>;
   User: ModelCtor<UserModel>;
 }
-//Attributes
-export interface TokenAttributes {
-  token_id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+export interface DB {
+  Project: ModelCtor<ProjectModel>;
+  Estimated_scope: ModelCtor<Estimated_scopeModel>;
+  Estimated_feature: ModelCtor<Estimated_featureModel>;
+  Default_feature: ModelCtor<Default_featureModel>;
+  User: ModelCtor<UserModel>;
+  Token: ModelCtor<TokenModel>;
 }
+//Attributes
 export enum Status {
   DEVREVIEW = "dev_review",
   ACCEPTED = "accepted",
@@ -114,4 +112,17 @@ export interface UserAttributes {
   password: string;
   gender: number;
   onboarding_at: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
+export interface UserCreationAttributes
+  extends Optional<UserAttributes, "id"> {}
+export interface TokenAttributes {
+  id?: number;
+  user_id?: number;
+  token_id: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+export interface TokenCreationAttributes
+  extends Optional<TokenAttributes, "id"> {}

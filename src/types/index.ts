@@ -25,7 +25,6 @@ export type ProjectExtendedType = ProjectType &
     estimated_scope_id?: number;
     estimated_scope: EstimatedScopeType;
     estimated_features: EstimatedFeatureType[];
-    [key: string]: any;
   };
 
 export type TotalsType = {

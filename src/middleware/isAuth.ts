@@ -8,7 +8,7 @@ export const authMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.get("Authorization");
+  const authHeader = req.headers["authorization"] as string;
   if (!authHeader)
     return next(new ErrorResponse("Token was not provided", 401));
 
@@ -20,7 +20,7 @@ export const authMiddleware = (
       token,
       process.env.ACCESS_TOKEN_SECRET as Secret
     ) as DecodedToken;
-    if ((decodedToken as DecodedToken).type !== "access") {
+    if (decodedToken.type !== "access") {
       return next(new ErrorResponse("Invalid token", 401));
     }
   } catch (e) {
@@ -32,5 +32,6 @@ export const authMiddleware = (
   }
 
   if (!decodedToken) return next(new ErrorResponse("Not authenticated", 401));
+
   next();
 };
