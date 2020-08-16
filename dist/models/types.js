@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Status = void 0;
+exports.UserRole = exports.Status = void 0;
 //Attributes
 var Status;
 (function (Status) {
@@ -9,3 +9,10 @@ var Status;
     Status["INACTIVE"] = "inactive";
     Status["INPROGRESS"] = "in_progress";
 })(Status = exports.Status || (exports.Status = {}));
+var UserRole;
+(function (UserRole) {
+    UserRole["MEMBER"] = "member";
+    UserRole["ADMIN"] = "admin";
+})(UserRole = exports.UserRole || (exports.UserRole = {}));
+// export interface UserTeamCreationAttributes
+//   extends Optional<UserTeamAttributes, "id"> {}

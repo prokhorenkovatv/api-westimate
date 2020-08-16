@@ -1,6 +1,5 @@
 "use strict";
 import { Sequelize, Model, DataTypes } from "sequelize";
-import { EstimatedScopeAttributes } from "./types";
 
 export default (sequelize: Sequelize) => {
   class Estimated_scope extends Model {

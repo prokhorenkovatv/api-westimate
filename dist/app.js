@@ -13,6 +13,7 @@ const default_features_1 = __importDefault(require("routes/default_features"));
 const estimated_features_1 = __importDefault(require("routes/estimated_features"));
 const admin_1 = __importDefault(require("routes/admin"));
 const auth_1 = __importDefault(require("routes/auth"));
+const user_1 = __importDefault(require("routes/user"));
 const error_1 = require("middleware/error");
 const errorResponse_1 = __importDefault(require("utils/errorResponse"));
 const PORT = process.env.PORT || 3500;
@@ -31,6 +32,7 @@ app.use("/api/v1/admin", admin_1.default);
 app.use("/api/v1/projects", projects_1.default);
 app.use("/api/v1/default_features", default_features_1.default);
 app.use("/api/v1/estimated_features", estimated_features_1.default);
+app.use("/api/v1/users", user_1.default);
 app.all("*", async (req, res, next) => {
     const err = new errorResponse_1.default(`${req.originalUrl} does not exist on the server`, 404);
     next(err);

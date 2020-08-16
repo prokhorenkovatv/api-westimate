@@ -17,6 +17,8 @@ import {
   Estimated_featureModel,
   EstimatedScopeAttributes,
   EstimatedFeatureAttributes,
+  TeamAttributes,
+  TeamModel,
 } from "./types";
 import { ErrorHandler } from "middleware/error";
 import { calculateTotals } from "utils/calculateTotals";
@@ -32,7 +34,9 @@ export default (sequelize: Sequelize) => {
     public price_per_hour!: number;
     public hours_per_day!: number;
     public estimated_scope_id!: number;
+    public team_id!: number;
     public estimated_scope!: EstimatedScopeAttributes;
+    public team!: TeamAttributes;
     public estimated_features!: EstimatedFeatureAttributes[];
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -46,6 +50,8 @@ export default (sequelize: Sequelize) => {
     public getEstimated_features!: HasManyGetAssociationsMixin<
       Estimated_featureModel
     >;
+    public static createTeam: BelongsToCreateAssociationMixin<TeamModel>;
+    public createTeam!: BelongsToCreateAssociationMixin<TeamModel>;
     //custom
     public static list: () => Promise<ProjectAttributes[]>;
     public create!: (models: AllModels) => Promise<ProjectType>;
@@ -97,11 +103,25 @@ export default (sequelize: Sequelize) => {
         author_id: this.author_id,
         price_per_hour: this.price_per_hour,
         hours_per_day: this.hours_per_day,
+        Team: this.team,
         Estimated_scope: this.estimated_scope,
         Estimated_features: [],
       },
       {
-        include: [models.Estimated_scope, models.Estimated_feature],
+        include: [
+          models.Estimated_scope,
+          models.Estimated_feature,
+          models.Team,
+        ],
+      }
+    );
+    // set team_name as project title
+    const team = await models.Team.update(
+      { team_name: p.title },
+      {
+        where: {
+          id: p.team_id,
+        },
       }
     );
     return {
@@ -112,18 +132,19 @@ export default (sequelize: Sequelize) => {
       author_id: p.author_id,
       price_per_hour: p.price_per_hour,
       hours_per_day: p.hours_per_day,
+      team_id: p.team_id,
       estimated_scope_id: p.estimated_scope_id,
     };
   };
 
-  Project.duplicate = async (
+  Project.duplicate = async function (
     id: number,
     author_id: number,
     models: AllModels
-  ) => {
+  ) {
     const p = await findByPk(id);
     const es = await p.getEstimated_scope();
-    return Project.create(
+    const duplicate_p = await Project.create(
       {
         title: p.title,
         description: p.description,
@@ -131,22 +152,36 @@ export default (sequelize: Sequelize) => {
         author_id: author_id,
         price_per_hour: p.price_per_hour,
         hours_per_day: p.hours_per_day,
+        Team: this.createTeam({ team_name: p.title }),
         Estimated_scope: es,
         Estimated_features: [],
       },
       {
-        include: [models.Estimated_scope, models.Estimated_feature],
+        include: [
+          models.Estimated_scope,
+          models.Estimated_feature,
+          models.Team,
+        ],
       }
-    ).then((p: ProjectType) => ({
-      id: p.id,
-      title: p.title,
-      description: p.description,
-      status: p.status,
-      author_id: p.author_id,
-      price_per_hour: p.price_per_hour,
-      hours_per_day: p.hours_per_day,
-      estimated_scope_id: p.estimated_scope_id,
-    }));
+    );
+    // await models.Team.update(
+    //   { team_name: duplicate_p.title },
+    //   {
+    //     where: {
+    //       id: duplicate_p.team_id,
+    //     },
+    //   }
+    // );
+    return {
+      id: duplicate_p.id,
+      title: duplicate_p.title,
+      description: duplicate_p.description,
+      status: duplicate_p.status,
+      author_id: duplicate_p.author_id,
+      price_per_hour: duplicate_p.price_per_hour,
+      hours_per_day: duplicate_p.hours_per_day,
+      estimated_scope_id: duplicate_p.estimated_scope_id,
+    };
   };
 
   Project.delete = (id: number, models: AllModels) =>
@@ -156,7 +191,7 @@ export default (sequelize: Sequelize) => {
         cascade: true,
         include: [
           {
-            model: models.Estimated_scope,
+            model: [models.Estimated_scope, models.Team],
             cascade: true,
           },
         ],
@@ -178,6 +213,7 @@ export default (sequelize: Sequelize) => {
       hours_per_day: p.hours_per_day,
       created_at: p.createdAt,
       updated_at: p.updatedAt,
+      team_id: p.team_id,
       estimated_scope_id: p.estimated_scope_id,
       estimated_scope,
       estimated_features,

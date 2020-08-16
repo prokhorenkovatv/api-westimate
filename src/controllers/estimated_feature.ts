@@ -26,7 +26,7 @@ const postProjectFeature = asyncHandler(
 
     const { title, description, frontend_days, backend_days } = req.body;
 
-    const feature = await models.Estimated_feature.build({
+    const feature = models.Estimated_feature.build({
       title,
       description,
       frontend_days,

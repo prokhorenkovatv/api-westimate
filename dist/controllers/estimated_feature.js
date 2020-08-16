@@ -22,7 +22,7 @@ const postProjectFeature = async_1.asyncHandler(async (req, res, next) => {
         throw new errorResponse_1.default("Validation failed, entered data is incorrect", 422);
     const { id } = req.params;
     const { title, description, frontend_days, backend_days } = req.body;
-    const feature = await models_1.default.Estimated_feature.build({
+    const feature = models_1.default.Estimated_feature.build({
         title,
         description,
         frontend_days,

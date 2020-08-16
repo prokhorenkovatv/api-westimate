@@ -14,6 +14,18 @@ module.exports = {
         onDelete: "CASCADE",
       })
       .then(() => {
+        //team hasOne Project
+        return queryInterface.addColumn("Projects", "team_id", {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "Teams",
+            key: "id",
+          },
+          onUpdate: "CASCADE",
+          onDelete: "CASCADE",
+        });
+      })
+      .then(() => {
         // project hasMany estimated_features
         return queryInterface.addColumn("Estimated_features", "project_id", {
           type: Sequelize.INTEGER,
@@ -54,6 +66,9 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface
       .removeColumn("Projects", "estimated_scope_id")
+      .then(() => {
+        return queryInterface.removeColumn("Projects", "team_id");
+      })
       .then(() => {
         return queryInterface.removeColumn("Estimated_features", "project_id");
       })

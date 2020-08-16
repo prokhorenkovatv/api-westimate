@@ -10,6 +10,8 @@ const estimated_feature_1 = __importDefault(require("models/estimated_feature"))
 const default_feature_1 = __importDefault(require("models/default_feature"));
 const token_1 = __importDefault(require("models/token"));
 const user_1 = __importDefault(require("models/user"));
+const team_1 = __importDefault(require("models/team"));
+const user_team_1 = __importDefault(require("models/user_team"));
 const env = process.env.NODE_ENV || "development";
 const config = require("database/config.json")[env];
 let sequelize;
@@ -26,9 +28,18 @@ const db = {
     Default_feature: default_feature_1.default(sequelize),
     Token: token_1.default(sequelize),
     User: user_1.default(sequelize),
+    Team: team_1.default(sequelize),
+    User_Team: user_team_1.default(sequelize),
 };
 const applyAssociations = (db) => {
-    const { Project, Estimated_scope, Estimated_feature, User, Token } = db;
+    const { Project, Estimated_scope, Estimated_feature, User, Token, Team, User_Team, } = db;
+    Project.belongsTo(Team, {
+        foreignKey: {
+            name: "team_id",
+            allowNull: false,
+        },
+        onDelete: "CASCADE",
+    });
     Project.hasMany(Estimated_feature, {
         foreignKey: "project_id",
         onDelete: "CASCADE",
@@ -50,6 +61,14 @@ const applyAssociations = (db) => {
     User.hasMany(Project, {
         foreignKey: "author_id",
         onDelete: "CASCADE",
+    });
+    User.belongsToMany(Team, {
+        through: User_Team,
+        foreignKey: "user_id",
+    });
+    Team.belongsToMany(User, {
+        through: User_Team,
+        foreignKey: "team_id",
     });
 };
 applyAssociations(db);

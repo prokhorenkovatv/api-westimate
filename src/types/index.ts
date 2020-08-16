@@ -1,9 +1,10 @@
-import { Status } from "models/types";
+import { Status, UserRole } from "models/types";
 
 export type UserType = {
   id: number;
   email: string;
   password: string;
+  role: UserRole;
   first_name: string;
   last_name: string;
   gender: number;
@@ -22,6 +23,7 @@ export type TokenType = {
 
 export type ProjectExtendedType = ProjectType &
   TotalsType & {
+    team_id: number;
     estimated_scope_id?: number;
     estimated_scope: EstimatedScopeType;
     estimated_features: EstimatedFeatureType[];

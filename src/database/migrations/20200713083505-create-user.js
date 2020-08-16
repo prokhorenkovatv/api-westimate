@@ -14,6 +14,9 @@ module.exports = {
       last_name: {
         type: Sequelize.STRING,
       },
+      role: {
+        type: Sequelize.ENUM("member", "admin"),
+      },
       email: {
         type: Sequelize.STRING,
         unique: true,

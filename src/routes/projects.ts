@@ -14,11 +14,11 @@ import {
   deleteProjectFeature,
 } from "controllers/estimated_feature";
 import { authMiddleware } from "middleware/isAuth";
-import {
-  projectValidationRules,
-  validate,
-  featureValidationRules,
-} from "../middleware/validator";
+// import {
+//   projectValidationRules,
+//   validate,
+//   featureValidationRules,
+// } from "../middleware/validator";
 
 const router = express.Router();
 
@@ -30,13 +30,13 @@ router.post("/:id/duplicate", authMiddleware, postDuplicateProject);
 
 router.get("/:id", authMiddleware, getProject);
 
-router.patch("/:id", patchProject);
+router.patch("/:id", authMiddleware, patchProject);
 
 router.delete("/:id", authMiddleware, deleteProject);
 
 router.post(
   "/:id/estimated_features",
-  // authMiddleware,
+  authMiddleware,
   // featureValidationRules(),
   // validate,
   postProjectFeature
@@ -44,9 +44,7 @@ router.post(
 
 router.patch(
   "/:id/estimated_features/:featureId",
-  // authMiddleware,
-  // featureValidationRules(),
-  // validate,
+  authMiddleware,
   patchProjectFeature
 );
 

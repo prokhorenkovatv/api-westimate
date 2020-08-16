@@ -8,6 +8,7 @@ import default_features from "routes/default_features";
 import estimated_features from "routes/estimated_features";
 import admin from "routes/admin";
 import auth from "routes/auth";
+import user from "routes/user";
 import { errorHandler } from "middleware/error";
 import ErrorResponse from "utils/errorResponse";
 const PORT = process.env.PORT || 3500;
@@ -35,6 +36,7 @@ app.use("/api/v1/admin", admin);
 app.use("/api/v1/projects", projects);
 app.use("/api/v1/default_features", default_features);
 app.use("/api/v1/estimated_features", estimated_features);
+app.use("/api/v1/users", user);
 
 app.all("*", async (req: Request, res: Response, next: NextFunction) => {
   const err: Error = new ErrorResponse(
